@@ -1,0 +1,16 @@
+Why do we need db transaction?
+
+1- To provide a reliable and consistent unit of work, even in case of system failure
+2- To provide isolation between proggrams that access the database concurrently
+
+* In order to achiev these 2 goals, a db transaction must satisfy the ACID properties:
+Atomicity(A): 
+    Chỉ có 2 trường hợp: tất cả thành công hoặc tất cả thất bại. Nếu 1 phần của transaction thất bại --> có nghĩa là toàn bộ transaction thất bại
+Consitency(C):
+    Tính nhất quán - Chuyển từ 1 trạng thái hợp lệ sang 1 trạng thái hợp lệ khác
+Isolation(I):
+    Tính cô lập - đảm bảo các transaction thực hiện độc lập với nhau
+Durability(D):
+    Tính bền vững - đảm bảo rằng khi một giao dịch đã được xác nhận, 
+    thì các thay đổi do giao dịch đó gây ra sẽ bị khóa lại, ngay cả khi hệ thống có gặp sự cố như mất điện hoặc sự cố phần cứng.
+
