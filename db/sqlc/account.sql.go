@@ -153,7 +153,7 @@ func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Acc
 
 const updateAccount = `-- name: UpdateAccount :one
 UPDATE accounts 
-SET balance = balance + $2 
+SET balance = $2 
 WHERE id = $1
 RETURNING id, owner, balance, currency, created_at
 `
