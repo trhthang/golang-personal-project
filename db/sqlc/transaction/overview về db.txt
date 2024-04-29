@@ -1,0 +1,33 @@
++/ Tạo database, với:
+Bảng account có các thuộc tính : như số dư, loại tiền tệ
+Bảng entries --> lưu các giao dịch của account ví dụ: account1 -50, account2 +50
+Bảng transfer --> lưu các giao dịch giữa các account, ví dụ : account 1 chuyển account 2 :50
+
+
++/ Tạo các câu query, update sql cho mỗi bảng
+
++/ Tạo db transaction:(file store.go)
+Khi 1 giao dịch chuyển tiền được thực hiện thì 1 transaction được thực thi:
+
+   -- Tạo transfer record : account 1 chuyển tới account 2 (hoặc ngược lại)
+   -- Tạo entry record cho account 1 : amount -10
+   -- Tạo entry record cho account 2 : amount + 10
+   -- Trừ 10 balance của account 1
+   -- Thêm 10 balance của account 2
+
++/ Lock transaction:
+Khi có nhiều giao dịch cập nhật trên cùng 1 account... có thể gây ra race condition --> chính vì vậy phải sử dụng lock transaction 
+để khóa 1 tài khoản và cập nhật nó và transaction hoàn thành xong thì mới mở khóa
+
++/ Deadlock:
+
+Khi trường hợp:
+Transaction1:  Account 1 chuyển tiền tới Account 2 và đồng thời Transaction 2: Account 2 chuyển tiền với Account 1:
+Transaction1: khóa Account1 để cập nhật... Transaction2: khóa Account2 để cập nhật --> vẫn chạy tốt
+Transaction1: cập nhật Account2 --> phải đợi vì Transaction2 đang khóa Account2... Transaction2 cập nhật Account1 --> phải đợi vì Transaction1 đang khóa Account1
+--> xảy ra deadlock vì cả 2 transaction phải đợi lẫn nhau đến vô tận 
+
+Cách xử lý: Nếu có 2 transaction xảy ra đồng thời
+thì cho cả 2 transaction đều cập nhật 1 account trước ( account 1 hoặc account2)
+--> transaction 1 cập nhật account 1 , transaction2 cập nhật account 1 --> phải đợi ví transaction 1 đang khóa account 1
+transaction1 cập nhật account2 và xong nhả khóa cho transaction2 cập nhật account 2 --> xong và không có deadlock xảy ra
